@@ -1,5 +1,5 @@
 ---
-import '../styles/global.css';
+layout: ../../layouts/MarkdownPostLayout.astro
 
 title: My Third Blog Post
 author: Astro Learner
