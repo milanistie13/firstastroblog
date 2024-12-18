@@ -22,7 +22,8 @@ html {
 
   /* nav styles */
 
-.hamburger {
+  .hamburger {
+    display: block;  /* Show by default on mobile */
     padding-right: 20px;
     cursor: pointer;
   }
@@ -63,6 +64,15 @@ html {
   display: unset;
 }
 
+html.dark {
+  background-color: #0d0950;
+  color: #fff;
+}
+
+.dark .nav-links a {
+  color: #fff;
+}
+
 @media screen and (min-width: 636px) {
   .nav-links {
     margin-left: 5em;
@@ -77,8 +87,8 @@ html {
     padding: 15px 20px;
   }
 
-}
+  .hamburger {
+    display: none;  /* Hide only on larger screens */
+  }
 
-.hamburger {
-  display: none;
 }
