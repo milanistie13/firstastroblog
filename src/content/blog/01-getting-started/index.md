@@ -3,7 +3,9 @@ title: "Getting started"
 description: "Hit the ground running."
 date: "2024-03-22"
 tags:
-  - tutorial
+  - test
+category: "guide"
+featured: true
 ---
 
 ---
@@ -179,4 +181,3 @@ const setGiscusTheme = () => {
     giscus.src = url.toString();
   }
 };
-```

@@ -4,6 +4,8 @@ description: "How to add posts to the blog."
 date: "2024-03-21"
 tags:
   - tutorial
+category: "guide"
+featured: true
 ---
 
 ---
@@ -39,6 +41,8 @@ date: "2024-03-21";
 draft: false;
 tags:
   - tutorial
+category: "Blogging"
+featured: false
 ---
 ```
 
@@ -49,6 +53,8 @@ tags:
 | date        | Yes | string  | Must be a valid date string (able to be parsed). |
 | draft       | No  | boolean | If draft: true, content will not be published.   |
 | tags        | No  | string array | Tags to organize content |
+| category    | No  | string  | Category to organize content |
+| featured    | No  | boolean | If featured: true, content will be highlighted.  |
 
 ---
 
@@ -62,6 +68,8 @@ date: "2024-03-21";
 draft: false;
 tags:
   - tutorial
+category: "Blogging"
+featured: false
 ---
 
 ## Working with the blog collection

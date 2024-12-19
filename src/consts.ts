@@ -16,12 +16,21 @@ export const HOME: Metadata = {
 export const BLOG: Metadata = {
   TITLE: "Blog",
   DESCRIPTION: "A collection of articles on topics I am passionate about.",
+  FEATURED: {
+    TITLE: "Featured Posts",
+    DESCRIPTION: "A curated selection of top articles and recommended reads."
+  }
 };
 
 export const PROJECTS: Metadata = {
   TITLE: "Projects",
   DESCRIPTION:
     "A collection of my projects with links to repositories and live demos.",
+};
+
+export const CATEGORIES: Metadata = {
+  TITLE: "Categories",
+  DESCRIPTION: "Browse blog posts by category",
 };
 
 export const SOCIALS: Socials = [

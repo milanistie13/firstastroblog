@@ -6,10 +6,14 @@ export type Site = {
   NUM_PROJECTS_ON_HOMEPAGE: number;
 };
 
-export type Metadata = {
+export interface Metadata {
   TITLE: string;
   DESCRIPTION: string;
-};
+  FEATURED?: {
+    TITLE: string;
+    DESCRIPTION: string;
+  };
+}
 
 export type Socials = {
   NAME: string;

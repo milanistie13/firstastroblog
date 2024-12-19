@@ -4,6 +4,7 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import ArrowCard from "@components/ArrowCard.astro";
 import { BLOG } from "@consts";
+import Breadcrumb from "@components/Breadcrumb.astro";
 
 const data = (await getCollection("blog"))
   .filter((post) => !post.data.draft)
@@ -23,10 +24,16 @@ const posts = data.reduce((acc: Acc, post) => {
 }, {});
 
 const years = Object.keys(posts).sort((a, b) => parseInt(b) - parseInt(a));
+
+const breadcrumbItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Blog' }
+];
 ---
 
 <Layout title={BLOG.TITLE} description={BLOG.DESCRIPTION}>
   <Container>
+    <Breadcrumb items={breadcrumbItems} />
     <aside data-pagefind-ignore>
       <div class="space-y-10">
         <div class="space-y-4">

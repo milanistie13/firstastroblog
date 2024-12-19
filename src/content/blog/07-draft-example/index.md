@@ -5,6 +5,7 @@ date: "2022-12-31"
 draft: false
 tags:
   - example
+category: "tips"
 ---
 
 This post also demonstrates the year sorting capabilities.

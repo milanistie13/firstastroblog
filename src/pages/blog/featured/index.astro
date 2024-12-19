@@ -1,0 +1,44 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import { BLOG } from "@consts";
+import ArrowCard from "@components/ArrowCard.astro";
+import Breadcrumb from "@components/Breadcrumb.astro";
+import { getCollection } from "astro:content";
+
+const blog = (await getCollection("blog"))
+  .filter((post) => !post.data.draft && post.data.featured)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const breadcrumbItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Featured Posts' }
+];
+---
+
+<Layout title={BLOG.FEATURED?.TITLE || "Featured Posts"} description={BLOG.FEATURED?.DESCRIPTION || "A curated selection of top articles"}>
+  <Container>
+    <Breadcrumb items={breadcrumbItems} />
+    <div class="space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-y-2">
+        <h1 class="text-3xl font-semibold text-black dark:text-white">
+          {BLOG.FEATURED?.TITLE || "Featured Posts"}
+        </h1>
+      </div>
+      {blog.length === 0 ? (
+        <p class="text-gray-600 dark:text-gray-400">
+          No featured posts available at the moment.
+        </p>
+      ) : (
+        <ul class="not-prose flex flex-col gap-4">
+          {blog.map((post) => (
+            <li>
+              <ArrowCard entry={post} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </Container>
+</Layout>
