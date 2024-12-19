@@ -3,7 +3,8 @@ import { defineConfig } from "astro/config";
 
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
-import pagefind from "astro-pagefind";
+// Temporarily comment out Pagefind
+// import pagefind from "astro-pagefind";
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,22 +13,19 @@ export default defineConfig({
     tailwind(), 
     sitemap(), 
     mdx(), 
-    pagefind({
-      // Add explicit configuration
-      indexing: {
-        // Optional: Customize indexing behavior
-        excludeSelector: [
-          // Exclude specific elements from indexing if needed
-          'nav', 
-          'footer', 
-          '.exclude-from-search'
-        ]
-      },
-      ui: {
-        // Optional: Customize UI options
-        resetStyles: true
-      }
-    })
+    // Comment out Pagefind integration
+    // pagefind({
+    //   indexing: {
+    //     excludeSelector: [
+    //       'nav', 
+    //       'footer', 
+    //       '.exclude-from-search'
+    //     ]
+    //   },
+    //   ui: {
+    //     resetStyles: true
+    //   }
+    // })
   ],
   markdown: {
     shikiConfig: {

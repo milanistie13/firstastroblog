@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
+    "build:verbose": "astro check && astro build --verbose",
     "preview": "astro preview",
     "astro": "astro"
   },
