@@ -56,10 +56,10 @@ const blog: CollectionEntry<"blog">[] = (await getCollection("blog"))
             },
             "datePublished": post.data.date.toISOString(),
             "image": post.data.image || "https://shopperqueries.com/default-image.jpg",
-            "url": `https://shopperqueries.com/blog/${post.slug}`
+            "url": `https://shopperqueries.com/blog/${post.id.replace(/^.*\//, '')}`
           }
         }))
-      })}
+      }, null, 2)}
     </script>
   )}
 
