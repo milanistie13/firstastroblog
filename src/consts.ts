@@ -29,6 +29,11 @@ export const CATEGORIES: Metadata = {
   DESCRIPTION: "Browse blog posts by category",
 };
 
+export const TAGS: Metadata = {
+  TITLE: "Tags",
+  DESCRIPTION: "Browse blog posts by tags",
+};
+
 export const SOCIALS: Socials = [
   {
     NAME: "X (formerly Twitter)",
