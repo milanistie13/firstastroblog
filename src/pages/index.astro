@@ -5,16 +5,21 @@ import { SITE, HOME, SOCIALS } from "@consts";
 import ArrowCard from "@components/ArrowCard.astro";
 import Link from "@components/Link.astro";
 import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
 
-const blog = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const blog: CollectionEntry<"blog">[] = (await getCollection("blog"))
+  .filter((post: CollectionEntry<"blog">) => !post.data.draft)
+  .sort((a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => 
+    b.data.date.valueOf() - a.data.date.valueOf()
+  );
 
-const projectList = (
+const projectList: CollectionEntry<"projects">[] = (
   await getCollection("projects")
 )
-  .filter((project) => !project.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .filter((project: CollectionEntry<"projects">) => !project.data.draft)
+  .sort((a: CollectionEntry<"projects">, b: CollectionEntry<"projects">) => 
+    b.data.date.valueOf() - a.data.date.valueOf()
+  )
   .slice(0, SITE.NUM_PROJECTS_ON_HOMEPAGE);
 ---
 
@@ -48,43 +53,42 @@ const projectList = (
                 >.
               </p>
             </span>
-            <span class="animate">
-              <p>
-                Micro still comes with everything great about Nano — full type
-                safety, a sitemap, an RSS feed, and Markdown + MDX support.
-                Styled with TailwindCSS and preconfigured with system, light,
-                and dark themes.
-              </p>
-              <p>
-                Visit
-                <Link href="https://github.com/trevortylerlee/astro-micro">
-                  Astro Micro on GitHub
-                </Link>
-                to fork the repository to get started.
-              </p>
-            </span>
           </article>
         </section>
 
-        <section class="animate space-y-6">
-          {blog.length > 0 && (
-            <section class="space-y-6">
-              <div class="flex flex-wrap items-center justify-between gap-y-2">
-                <h2 class="font-semibold text-black dark:text-white">
-                  Latest Posts
-                </h2>
-                <Link href="/blog"> See all posts </Link>
-              </div>
-              <ul class="not-prose flex flex-col gap-4">
-                {blog.map((post) => (
+        {
+          projectList.length > 0 && (
+            <section>
+              <h2 class="mb-4 text-lg font-semibold text-black dark:text-white">
+                Recent Projects
+              </h2>
+              <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {projectList.map((project: CollectionEntry<"projects">) => (
+                  <li>
+                    <ArrowCard entry={project} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        {
+          blog.length > 0 && (
+            <section>
+              <h2 class="mb-4 text-lg font-semibold text-black dark:text-white">
+                Recent Posts
+              </h2>
+              <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post: CollectionEntry<"blog">) => (
                   <li>
                     <ArrowCard entry={post} />
                   </li>
                 ))}
               </ul>
             </section>
-          )}
-        </section>
+          )
+        }
 
         <section class="animate space-y-4">
           <h2 class="font-semibold text-black dark:text-white">
