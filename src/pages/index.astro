@@ -1,16 +1,23 @@
 ---
+import { type CollectionEntry, getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import ArrowCard from "@components/ArrowCard.astro";
 import Link from "@components/Link.astro";
-import { getCollection } from "astro:content";
-import type { CollectionEntry } from "astro:content";
 import type { Socials } from "@types";
 import { SITE, HOME, SOCIALS } from "@consts";
 
-const blog: CollectionEntry<"blog">[] = (await getCollection("blog"))
-  .filter((post: CollectionEntry<"blog">) => !post.data.draft)
-  .sort((a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => 
+// Extend the blog post type with optional properties
+type BlogPost = CollectionEntry<"blog"> & {
+  data: CollectionEntry<"blog">['data'] & {
+    author?: string;
+    image?: string;
+  };
+};
+
+const blog: BlogPost[] = (await getCollection("blog"))
+  .filter((post: BlogPost) => !post.data.draft)
+  .sort((a: BlogPost, b: BlogPost) => 
     b.data.date.valueOf() - a.data.date.valueOf()
   );
 
@@ -40,7 +47,7 @@ const websiteSchema = {
 const blogListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  "itemListElement": blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post, index) => ({
+  "itemListElement": blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post: BlogPost, index: number) => ({
     "@type": "ListItem",
     "position": index + 1,
     "item": {
@@ -48,21 +55,21 @@ const blogListSchema = {
       "headline": post.data.title,
       "author": {
         "@type": "Person",
-        "name": post.data.author || "Shopperqueries Team"
+        "name": post.data.author ?? "Shopperqueries Team"
       },
       "datePublished": post.data.date.toISOString(),
-      "image": post.data.image || "https://shopperqueries.com/default-image.jpg",
-      "url": `https://shopperqueries.com/blog/${post.slug}`
+      "image": post.data.image ?? "https://shopperqueries.com/default-image.jpg",
+      "url": `https://shopperqueries.com/blog/${post.id.replace(/^.*\//, '')}`
     }
   }))
 };
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
-  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema, null, 2)}></script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema, null, 2)}></script>
   
   {blog.length > 0 && (
-    <script type="application/ld+json" set:html={JSON.stringify(blogListSchema, null, 2)}></script>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(blogListSchema, null, 2)}></script>
   )}
 
   <Container>
@@ -91,7 +98,7 @@ const blogListSchema = {
                 Recent Posts
               </h2>
               <ul class="grid grid-cols-1 gap-4">
-                {blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post: CollectionEntry<"blog">) => (
+                {blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post: BlogPost) => (
                   <li>
                     <ArrowCard entry={post} />
                   </li>

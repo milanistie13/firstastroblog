@@ -1,5 +1,5 @@
 ---
-import { type CollectionEntry, getCollection, render } from "astro:content";
+import { type CollectionEntry, getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import FormattedDate from "@components/FormattedDate.astro";
@@ -7,31 +7,39 @@ import { readingTime } from "@lib/utils";
 import BackToPrevious from "@components/BackToPrevious.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
-import Giscus from "@components/Giscus.astro";
 import Breadcrumb from "@components/Breadcrumb.astro";
+
+// Extend the blog post type with optional properties and render method
+type BlogPost = CollectionEntry<"blog"> & {
+  render: () => Promise<{
+    Content: any;
+    headings: any[];
+  }>;
+};
 
 export async function getStaticPaths() {
   const posts = (await getCollection("blog"))
     .filter((post) => !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()) as BlogPost[];
   return posts.map((post) => ({
     params: { 
       blogpost: post.id 
     },
-    props: post,
+    props: { post },
   }));
 }
-type Props = CollectionEntry<"blog">;
+
+const { post } = Astro.props as { post: BlogPost };
 
 const posts = (await getCollection("blog"))
   .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()) as BlogPost[];
 
-function getNextPost() {
-  let postIndex;
-  for (const post of posts) {
-    if (post.id === Astro.params.blogpost) {
-      postIndex = posts.indexOf(post);
+function getNextPost(): BlogPost | null {
+  let postIndex: number | undefined;
+  for (const p of posts) {
+    if (p.id === post.id) {
+      postIndex = posts.indexOf(p);
       if(postIndex + 1 < posts.length) {
         return posts[postIndex + 1];
       } else {
@@ -39,13 +47,14 @@ function getNextPost() {
       }
     }
   }
+  return null;
 }
 
-function getPrevPost() {
-  let postIndex;
-  for (const post of posts) {
-    if (post.id === Astro.params.blogpost) {
-      postIndex = posts.indexOf(post);
+function getPrevPost(): BlogPost | null {
+  let postIndex: number | undefined;
+  for (const p of posts) {
+    if (p.id === post.id) {
+      postIndex = posts.indexOf(p);
       if(postIndex - 1 >= 0) {
         return posts[postIndex - 1];
       } else {
@@ -53,83 +62,94 @@ function getPrevPost() {
       }
     }
   }
+  return null;
 }
 
-const nextPost = getNextPost();
-const prevPost = getPrevPost();
+const nextPost: BlogPost | null = getNextPost();
+const prevPost: BlogPost | null = getPrevPost();
 
-const post = Astro.props;
-const { Content, headings } = await render(post);
+const { Content, headings } = await post.render();
+
+const tags: string[] = post.data.tags ?? [];
 
 const breadcrumbItems = [
   { label: 'Home', href: '/' },
   { label: 'Blog', href: '/blog' },
   { label: post.data.title }
 ];
+
+const tagLinks = tags.map((tag: string) => ({
+  label: tag,
+  href: `/blog/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`
+}));
+
+const categoryLink = post.data.category ? {
+  label: post.data.category,
+  href: `/blog/category/${post.data.category.toLowerCase().replace(/\s+/g, '-')}`
+} : null;
+
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
   <Container>
     <Breadcrumb items={breadcrumbItems} />
-    <div class="animate">
-      <BackToPrevious href="/blog">Back to blog</BackToPrevious>
-    </div>
-    <div class="my-10 space-y-1">
-      <div class="animate flex items-center gap-1.5">
-        <div class="font-base text-sm">
-          <FormattedDate date={post.data.date} />
-        </div>
-        &bull;
-        {post.body && (
-          <div class="font-base text-sm">
-            {readingTime(post.body)}
-          </div>
-        )}        
+    
+    <article class="prose dark:prose-invert max-w-none prose-img:mx-auto prose-img:rounded-lg prose-img:border prose-img:border-gray-200 dark:prose-img:border-gray-700 prose-headings:scroll-m-20 prose-a:decoration-primary prose-a:underline-offset-4 hover:prose-a:decoration-primary/50 prose-code:before:content-[''] prose-code:after:content-[''] prose-code:p-1 prose-pre:p-0">
+      <div class="animate">
+        <BackToPrevious href="/blog">Back to blog</BackToPrevious>
       </div>
-      <h1 class="animate text-3xl font-semibold text-black dark:text-white">
-        {post.data.title}
-      </h1>
-      {
-        post.data.tags && post.data.tags?.length > 0 ? (
-          <div class="animate flex gap-2 pt-1">
-            {post.data.tags.map((tag) => (
+      <div class="my-10 space-y-1">
+        <div class="animate flex items-center gap-1.5">
+          <div class="font-base text-sm">
+            <FormattedDate date={post.data.date} />
+          </div>
+          &bull;
+          {post.body && (
+            <div class="font-base text-sm">
+              {readingTime(post.body)}
+            </div>
+          )}        
+        </div>
+        <h1 class="animate text-3xl font-semibold text-black dark:text-white">
+          {post.data.title}
+        </h1>
+        {
+          tags.length > 0 ? (
+            <div class="animate flex gap-2 pt-1">
+              {tagLinks.map((tag) => (
+                <a
+                  href={tag.href}
+                  class="rounded border border-black/15 px-2 py-1 text-sm transition-colors duration-300 ease-in-out hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+                >
+                  {tag.label}
+                </a>
+              ))}
+            </div>
+          ) : null
+        }
+        {
+          categoryLink ? (
+            <div class="animate flex gap-2 pt-1">
               <a
-                href={`/blog/tags/${tag}`}
+                href={categoryLink.href}
                 class="rounded border border-black/15 px-2 py-1 text-sm transition-colors duration-300 ease-in-out hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
               >
-                {tag}
+                {categoryLink.label}
               </a>
-            ))}
-          </div>
-        ) : null
-      }
-      {
-        post.data.category ? (
-          <div class="animate flex gap-2 pt-1">
-            <a
-              href={`/blog/category/${post.data.category.toLowerCase().replace(/\s+/g, '-')}`}
-              class="rounded border border-black/15 px-2 py-1 text-sm transition-colors duration-300 ease-in-out hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
-            >
-              {post.data.category}
-            </a>
-          </div>
-        ) : null
-      }
-    </div>
-    {headings.length > 0 && <TableOfContents headings={headings} />}
-    <article class="animate">
+            </div>
+          ) : null
+        }
+      </div>
+      {headings.length > 0 && <TableOfContents headings={headings} />}
       <Content />
-      <div class="mt-24">
-        <PostNavigation 
-          prevPost={prevPost} 
-          nextPost={nextPost} 
-          category={post.data.category?.toLowerCase().replace(/\s+/g, '-') || 'uncategorized'} 
-          blogpost={Astro.params.blogpost} 
-        />
-      </div>
-      <div class="mt-24">
-        <Giscus />
-      </div>
     </article>
+
+    <div class="mt-24">
+      <PostNavigation 
+        prevPost={prevPost} 
+        nextPost={nextPost} 
+        blogpost={post.id} 
+      />
+    </div>
   </Container>
 </Layout>

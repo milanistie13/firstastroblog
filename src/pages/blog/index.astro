@@ -6,35 +6,43 @@ import ArrowCard from "@components/ArrowCard.astro";
 import { BLOG } from "@consts";
 import Breadcrumb from "@components/Breadcrumb.astro";
 
-const data = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-type Acc = {
-  [year: string]: CollectionEntry<"blog">[];
+// Extend the blog post type with optional properties
+type BlogPost = CollectionEntry<"blog"> & {
+  data: CollectionEntry<"blog">['data'] & {
+    author?: string;
+    image?: string;
+  };
 };
 
-const posts = data.reduce((acc: Acc, post) => {
+const data: BlogPost[] = (await getCollection("blog"))
+  .filter((post: BlogPost) => !post.data.draft)
+  .sort((a: BlogPost, b: BlogPost) => b.data.date.valueOf() - a.data.date.valueOf());
+
+type Acc = {
+  [year: string]: BlogPost[];
+};
+
+const posts: Acc = data.reduce((acc: Acc, post: BlogPost) => {
   const year = post.data.date.getFullYear().toString();
   if (!acc[year]) {
     acc[year] = [];
   }
   acc[year].push(post);
   return acc;
-}, {});
+}, {} as Acc);
 
-const years = Object.keys(posts).sort((a, b) => parseInt(b) - parseInt(a));
+const years: string[] = Object.keys(posts).sort((a: string, b: string) => parseInt(b) - parseInt(a));
 
 const breadcrumbItems = [
   { label: 'Home', href: '/' },
   { label: 'Blog' }
 ];
 
-// Generate JSON-LD for Blog List
+// Blog List Schema
 const blogListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  "itemListElement": posts[years[0]].slice(0, 10).map((post, index) => ({
+  "itemListElement": posts[years[0]].slice(0, 10).map((post: BlogPost, index: number) => ({
     "@type": "ListItem",
     "position": index + 1,
     "item": {
@@ -42,32 +50,32 @@ const blogListSchema = {
       "headline": post.data.title,
       "author": {
         "@type": "Person",
-        "name": post.data.author || "Shopperqueries Team"
+        "name": post.data.author ?? "Shopperqueries Team"
       },
       "datePublished": post.data.date.toISOString(),
-      "image": post.data.image || "https://shopperqueries.com/default-image.jpg",
-      "url": `https://shopperqueries.com/blog/${post.slug}`
+      "image": post.data.image ?? "https://shopperqueries.com/default-image.jpg",
+      "url": `https://shopperqueries.com/blog/${post.id.replace(/^.*\//, '')}`
     }
   }))
 };
 ---
 
 <Layout title={BLOG.TITLE} description={BLOG.DESCRIPTION}>
-  <script type="application/ld+json" set:html={JSON.stringify(blogListSchema, null, 2)}></script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(blogListSchema, null, 2)}></script>
   <Container>
     <Breadcrumb items={breadcrumbItems} />
     <aside data-pagefind-ignore>
       <div class="space-y-10">
         <div class="space-y-4">
           {
-            years.map((year) => (
+            years.map((year: string) => (
               <section class="animate space-y-4">
                 <div class="font-semibold text-black dark:text-white">
                   {year}
                 </div>
                 <div>
                   <ul class="not-prose flex flex-col gap-4">
-                    {posts[year].map((post) => (
+                    {posts[year].map((post: BlogPost) => (
                       <li>
                         <ArrowCard entry={post} />
                       </li>

@@ -7,7 +7,6 @@ import { readingTime, capitalizeWords } from "@lib/utils";
 import BackToPrevious from "@components/BackToPrevious.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
-import Giscus from "@components/Giscus.astro";
 import Breadcrumb from "@components/Breadcrumb.astro";
 
 export async function getStaticPaths() {
@@ -166,9 +165,6 @@ const breadcrumbItems = [
           category={Astro.params.category} 
           blogpost={Astro.params.blogpost} 
         />
-      </div>
-      <div class="mt-24">
-        <Giscus />
       </div>
     </article>
   </Container>
