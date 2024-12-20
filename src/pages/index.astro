@@ -15,6 +15,53 @@ const blog: CollectionEntry<"blog">[] = (await getCollection("blog"))
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Shopperqueries",
+      "url": "https://shopperqueries.com",
+      "description": "Explore a new realm of shopping satisfaction with Shopper Queries, your trusted guide to elevated shopping experiences.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Shopperqueries",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://shopperqueries.com/logo.png"
+        }
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://shopperqueries.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    })}
+  </script>
+
+  {blog.length > 0 && (
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "Article",
+            "headline": post.data.title,
+            "author": {
+              "@type": "Person",
+              "name": post.data.author || "Shopperqueries Team"
+            },
+            "datePublished": post.data.date.toISOString(),
+            "image": post.data.image || "https://shopperqueries.com/default-image.jpg",
+            "url": `https://shopperqueries.com/blog/${post.slug}`
+          }
+        }))
+      })}
+    </script>
+  )}
+
   <Container>
     <aside data-pagefind-ignore>
       <h1 class="font-semibold text-black dark:text-white">
