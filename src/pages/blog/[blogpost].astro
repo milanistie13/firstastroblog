@@ -1,5 +1,5 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
+import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import FormattedDate from "@components/FormattedDate.astro";
@@ -9,18 +9,8 @@ import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import Breadcrumb from "@components/Breadcrumb.astro";
 
-// Extend the blog post type with render method
-type BlogPost = CollectionEntry<"blog"> & {
-  render: () => Promise<{
-    Content: any;
-    headings: any[];
-  }>;
-};
-
 export async function getStaticPaths() {
-  const posts = (await getCollection("blog"))
-    .filter((post) => !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()) as BlogPost[];
+  const posts = await getCollection("blog", (post) => !post.data.draft);
   return posts.map((post) => ({
     params: { 
       blogpost: post.id 
@@ -29,13 +19,11 @@ export async function getStaticPaths() {
   }));
 }
 
-const { post } = Astro.props as { post: BlogPost };
+const { post } = Astro.props;
 
-const posts = (await getCollection("blog"))
-  .filter((p) => !p.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()) as BlogPost[];
+const posts = await getCollection("blog", (p) => !p.data.draft);
 
-function getNextPost(): BlogPost | null {
+function getNextPost() {
   let postIndex: number | undefined;
   for (const p of posts) {
     if (p.id === post.id) {
@@ -50,7 +38,7 @@ function getNextPost(): BlogPost | null {
   return null;
 }
 
-function getPrevPost(): BlogPost | null {
+function getPrevPost() {
   let postIndex: number | undefined;
   for (const p of posts) {
     if (p.id === post.id) {
@@ -65,10 +53,12 @@ function getPrevPost(): BlogPost | null {
   return null;
 }
 
-const nextPost: BlogPost | null = getNextPost();
-const prevPost: BlogPost | null = getPrevPost();
+const nextPost = getNextPost();
+const prevPost = getPrevPost();
 
-const { Content, headings } = await post.render();
+const { Content, headings } = await import("astro:content").then(module => 
+  module.render(post)
+);
 
 const tags: string[] = post.data.tags ?? [];
 
