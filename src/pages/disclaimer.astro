@@ -1,0 +1,37 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import { SITE } from "@consts";
+
+const pageTitle = "Disclaimer";
+const pageDescription = "Disclaimer for Shopperqueries - Understanding our content and service limitations";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <Container>
+    <h1 class="text-3xl font-bold mb-6">{pageTitle}</h1>
+    
+    <section class="prose dark:prose-invert">
+      <h2>1. Content Accuracy</h2>
+      <p>While we strive to provide accurate and up-to-date information, Shopperqueries makes no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the information, products, services, or related graphics contained on the website.</p>
+      
+      <h2>2. Professional Advice</h2>
+      <p>The content on Shopperqueries is for general information and educational purposes only. It is not intended to be a substitute for professional advice. Always seek the guidance of qualified professionals for specific situations.</p>
+      
+      <h2>3. External Links</h2>
+      <p>Our website may contain links to external websites that are not provided or maintained by us. We do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external sites.</p>
+      
+      <h2>4. No Endorsement</h2>
+      <p>References to any specific product, process, or service by trade name, trademark, manufacturer, or otherwise do not necessarily constitute or imply its endorsement, recommendation, or favoring by Shopperqueries.</p>
+      
+      <h2>5. User Responsibility</h2>
+      <p>Users are responsible for verifying the accuracy of information and assessing its suitability for their specific needs. Shopperqueries shall not be liable for any losses or damages arising from the use of information on this website.</p>
+      
+      <h2>6. Changes in Disclaimer</h2>
+      <p>We reserve the right to modify this disclaimer at any time without prior notice. Continued use of the website after such changes constitutes acceptance of the new disclaimer.</p>
+      
+      <h2>7. Contact Information</h2>
+      <p>For any questions about this disclaimer, please contact us at: {SITE.EMAIL}</p>
+    </section>
+  </Container>
+</Layout>

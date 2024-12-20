@@ -28,6 +28,11 @@ export const TAGS: Metadata = {
   DESCRIPTION: "Browse blog posts by tags",
 };
 
+export const PROJECTS: Metadata = {
+  TITLE: "Projects",
+  DESCRIPTION: "A collection of my personal and professional projects",
+};
+
 export const SOCIALS: Socials = [
   {
     NAME: "X (formerly Twitter)",

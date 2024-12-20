@@ -12,7 +12,16 @@ import BackToTop from "@components/BackToTop.astro";
       </div>
     </div>
     <div class="flex items-center justify-between">
-      <div>&copy; {new Date().getFullYear()} • {SITE.TITLE} 🔬</div>
+      <div class="flex items-center gap-4">
+        <span>&copy; {new Date().getFullYear()} • {SITE.TITLE} 🔬</span>
+        <nav class="flex gap-2 text-sm">
+          <a href="/privacy-policy" class="hover:underline">Privacy Policy</a>
+          <span>•</span>
+          <a href="/terms-of-service" class="hover:underline">Terms of Service</a>
+          <span>•</span>
+          <a href="/disclaimer" class="hover:underline">Disclaimer</a>
+        </nav>
+      </div>
       <div class="flex flex-wrap items-center gap-1.5">
         <button
           id="light-theme-button"

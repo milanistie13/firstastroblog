@@ -76,6 +76,35 @@ const breadcrumbItems = [
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
+  <script is:inline type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": post.data.title,
+      "author": {
+        "@type": "Person",
+        "name": post.data.author || "Shopperqueries Team"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Shopperqueries",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://shopperqueries.com/logo.png"
+        }
+      },
+      "datePublished": post.data.date.toISOString(),
+      "dateModified": post.data.date.toISOString(),
+      "description": post.data.description,
+      "image": post.data.image || "https://shopperqueries.com/default-image.jpg",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://shopperqueries.com/blog/${post.slug}`
+      },
+      "keywords": post.data.tags?.join(", ") || "",
+      "articleSection": post.data.category || "Uncategorized"
+    })}
+  </script>
   <Container>
     <Breadcrumb items={breadcrumbItems} />
     <div class="animate">

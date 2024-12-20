@@ -1,0 +1,37 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import { SITE } from "@consts";
+
+const pageTitle = "Privacy Policy";
+const pageDescription = "Privacy policy for Shopperqueries - Understanding how we protect your data";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <Container>
+    <h1 class="text-3xl font-bold mb-6">{pageTitle}</h1>
+    
+    <section class="prose dark:prose-invert">
+      <h2>1. Information We Collect</h2>
+      <p>We collect information you provide directly to us, such as when you create an account, subscribe to our newsletter, or interact with our website.</p>
+      
+      <h2>2. How We Use Your Information</h2>
+      <p>We use the information we collect to provide, maintain, and improve our services, communicate with you, and personalize your experience.</p>
+      
+      <h2>3. Data Protection</h2>
+      <p>We implement appropriate technical and organizational measures to protect your personal data against unauthorized or unlawful processing.</p>
+      
+      <h2>4. Your Rights</h2>
+      <p>You have the right to access, correct, or delete your personal information. You can contact us at {SITE.EMAIL} to exercise these rights.</p>
+      
+      <h2>5. Cookies</h2>
+      <p>We use cookies to enhance your browsing experience and analyze site traffic. You can control cookies through your browser settings.</p>
+      
+      <h2>6. Changes to This Policy</h2>
+      <p>We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page.</p>
+      
+      <h2>7. Contact Us</h2>
+      <p>If you have any questions about this Privacy Policy, please contact us at: {SITE.EMAIL}</p>
+    </section>
+  </Container>
+</Layout>
