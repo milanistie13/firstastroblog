@@ -5,9 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "prebuild": "npx pagefind --source dist",
-    "build": "astro check && astro build && npm run prebuild",
-    "build:verbose": "astro check && astro build --verbose && npm run prebuild",
+    "build": "astro check && astro build && npx pagefind --source dist",
+    "build:verbose": "astro check && astro build --verbose && npx pagefind --source dist",
     "preview": "astro preview",
     "astro": "astro"
   },
