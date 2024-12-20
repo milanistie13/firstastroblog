@@ -9,13 +9,18 @@ import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
 import Breadcrumb from "@components/Breadcrumb.astro";
 
-// Extend the blog post type with optional properties
-type BlogPost = CollectionEntry<"blog">;
+// Extend the blog post type with render method
+type BlogPost = CollectionEntry<"blog"> & {
+  render: () => Promise<{
+    Content: any;
+    headings: any[];
+  }>;
+};
 
 export async function getStaticPaths() {
   const posts = (await getCollection("blog"))
     .filter((post) => !post.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()) as BlogPost[];
   return posts.map((post) => ({
     params: { 
       blogpost: post.id 
@@ -27,8 +32,8 @@ export async function getStaticPaths() {
 const { post } = Astro.props as { post: BlogPost };
 
 const posts = (await getCollection("blog"))
-  .filter((post) => !post.data.draft)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()) as BlogPost[];
 
 function getNextPost(): BlogPost | null {
   let postIndex: number | undefined;
@@ -63,9 +68,7 @@ function getPrevPost(): BlogPost | null {
 const nextPost: BlogPost | null = getNextPost();
 const prevPost: BlogPost | null = getPrevPost();
 
-const { Content, headings } = await import("astro:content").then(module => 
-  module.render(post)
-);
+const { Content, headings } = await post.render();
 
 const tags: string[] = post.data.tags ?? [];
 
