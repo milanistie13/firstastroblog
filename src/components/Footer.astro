@@ -11,18 +11,20 @@ import BackToTop from "@components/BackToTop.astro";
         <BackToTop />
       </div>
     </div>
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <span>&copy; {new Date().getFullYear()} • {SITE.TITLE} 🔬</span>
-        <nav class="flex gap-2 text-sm">
-          <a href="/privacy-policy" class="hover:underline">Privacy Policy</a>
-          <span>•</span>
-          <a href="/terms-of-service" class="hover:underline">Terms of Service</a>
-          <span>•</span>
-          <a href="/disclaimer" class="hover:underline">Disclaimer</a>
+    <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+      <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left w-full">
+        <span class="mb-2 sm:mb-0">&copy; {new Date().getFullYear()} • {SITE.TITLE} 🔬</span>
+        <nav class="flex flex-col sm:flex-row items-center gap-2 text-sm w-full justify-center sm:justify-start">
+          <div class="flex items-center gap-2">
+            <a href="/privacy-policy" class="hover:underline">Privacy Policy</a>
+            <span>•</span>
+            <a href="/terms-of-service" class="hover:underline">Terms of Service</a>
+            <span>•</span>
+            <a href="/disclaimer" class="hover:underline">Disclaimer</a>
+          </div>
         </nav>
       </div>
-      <div class="flex flex-wrap items-center gap-1.5">
+      <div class="flex flex-wrap items-center justify-center sm:justify-end gap-1.5 w-full sm:w-auto">
         <button
           id="light-theme-button"
           aria-label="Light theme"
