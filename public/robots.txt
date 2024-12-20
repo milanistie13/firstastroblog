@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shopperqueries.com/sitemap.xml
+
+# Crawl-delay to prevent overwhelming the server
+Crawl-delay: 10
+
+# Directories to exclude
+Disallow: /drafts/
+Disallow: /private/
+Disallow: /admin/

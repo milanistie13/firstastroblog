@@ -7,10 +7,29 @@ import pagefind from "astro-pagefind";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://astro-micro.vercel.app",
+  site: "https://shopperqueries.com",
   integrations: [
     tailwind(), 
-    sitemap(), 
+    sitemap({
+      filter: (page) => 
+        !page.includes('/drafts/') && 
+        !page.includes('/private/') && 
+        !page.includes('/admin/'),
+      serialize: (item) => {
+        // Add custom priority and change frequency for different page types
+        if (item.url.includes('/blog/')) {
+          item.priority = 0.7;
+          item.changefreq = 'weekly';
+        } else if (item.url.includes('/categories/') || item.url.includes('/tags/')) {
+          item.priority = 0.5;
+          item.changefreq = 'monthly';
+        } else {
+          item.priority = 0.8;
+          item.changefreq = 'daily';
+        }
+        return item;
+      }
+    }), 
     mdx(), 
     pagefind({
       indexing: {

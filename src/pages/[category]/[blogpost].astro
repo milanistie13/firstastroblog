@@ -3,7 +3,7 @@ import { type CollectionEntry, getCollection, render } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import FormattedDate from "@components/FormattedDate.astro";
-import { readingTime } from "@lib/utils";
+import { readingTime, capitalizeWords } from "@lib/utils";
 import BackToPrevious from "@components/BackToPrevious.astro";
 import PostNavigation from "@components/PostNavigation.astro";
 import TableOfContents from "@components/TableOfContents.astro";
@@ -127,26 +127,30 @@ const breadcrumbItems = [
       </h1>
       {
         post.data.tags && post.data.tags?.length > 0 ? (
-          <div class="animate flex gap-2 pt-1">
-            {post.data.tags.map((tag) => (
-              <a
-                href={`/tags/${tag}`}
-                class="rounded border border-black/15 px-2 py-1 text-sm transition-colors duration-300 ease-in-out hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
-              >
-                {tag}
-              </a>
-            ))}
+          <div class="animate flex items-center gap-2 pt-1">
+            <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Tags:</span>
+            <div class="flex gap-2">
+              {post.data.tags.map((tag) => (
+                <a
+                  href={`/tags/${tag.toLowerCase()}`}
+                  class="rounded-full bg-blue-100 text-blue-800 px-2 py-1 text-xs transition-colors duration-300 ease-in-out hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800"
+                >
+                  {capitalizeWords(tag)}
+                </a>
+              ))}
+            </div>
           </div>
         ) : null
       }
       {
         post.data.category ? (
-          <div class="animate flex gap-2 pt-1">
+          <div class="animate flex items-center gap-2 pt-1">
+            <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Category:</span>
             <a
               href={`/categories/${post.data.category.toLowerCase().replace(/\s+/g, '-')}`}
-              class="rounded border border-black/15 px-2 py-1 text-sm transition-colors duration-300 ease-in-out hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
+              class="rounded-full bg-green-100 text-green-800 px-2 py-1 text-xs transition-colors duration-300 ease-in-out hover:bg-green-200 dark:bg-green-900 dark:text-green-300 dark:hover:bg-green-800"
             >
-              {post.data.category}
+              {capitalizeWords(post.data.category)}
             </a>
           </div>
         ) : null
