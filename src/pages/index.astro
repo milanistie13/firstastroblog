@@ -11,11 +11,6 @@ const blog = (await getCollection("blog"))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const featuredPosts = (await getCollection("blog"))
-  .filter((post) => !post.data.draft && post.data.featured)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, SITE.NUM_POSTS_ON_HOMEPAGE);
-
 const projects: CollectionEntry<"projects">[] = (
   await getCollection("projects")
 )
@@ -73,23 +68,6 @@ const projects: CollectionEntry<"projects">[] = (
         </section>
 
         <section class="animate space-y-6">
-          {featuredPosts.length > 0 && (
-            <section class="space-y-6">
-              <div class="flex flex-wrap items-center justify-between gap-y-2">
-                <h2 class="font-semibold text-black dark:text-white">
-                  {BLOG.FEATURED?.TITLE || "Featured Posts"}
-                </h2>
-                <Link href="/blog/featured"> See all featured posts </Link>
-              </div>
-              <ul class="not-prose flex flex-col gap-4">
-                {featuredPosts.map((post) => (
-                  <li>
-                    <ArrowCard entry={post} />
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
           {blog.length > 0 && (
             <section class="space-y-6">
               <div class="flex flex-wrap items-center justify-between gap-y-2">
