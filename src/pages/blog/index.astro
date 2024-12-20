@@ -29,9 +29,31 @@ const breadcrumbItems = [
   { label: 'Home', href: '/' },
   { label: 'Blog' }
 ];
+
+// Generate JSON-LD for Blog List
+const blogListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": posts[years[0]].slice(0, 10).map((post, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "item": {
+      "@type": "Article",
+      "headline": post.data.title,
+      "author": {
+        "@type": "Person",
+        "name": post.data.author || "Shopperqueries Team"
+      },
+      "datePublished": post.data.date.toISOString(),
+      "image": post.data.image || "https://shopperqueries.com/default-image.jpg",
+      "url": `https://shopperqueries.com/blog/${post.slug}`
+    }
+  }))
+};
 ---
 
 <Layout title={BLOG.TITLE} description={BLOG.DESCRIPTION}>
+  <script type="application/ld+json" set:html={JSON.stringify(blogListSchema, null, 2)}></script>
   <Container>
     <Breadcrumb items={breadcrumbItems} />
     <aside data-pagefind-ignore>

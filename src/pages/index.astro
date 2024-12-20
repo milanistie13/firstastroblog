@@ -13,54 +13,56 @@ const blog: CollectionEntry<"blog">[] = (await getCollection("blog"))
   .sort((a: CollectionEntry<"blog">, b: CollectionEntry<"blog">) => 
     b.data.date.valueOf() - a.data.date.valueOf()
   );
+
+// Website Schema
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Shopperqueries",
+  "url": "https://shopperqueries.com",
+  "description": "Explore a new realm of shopping satisfaction with Shopperqueries, your trusted guide to elevated shopping experiences.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Shopperqueries",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://shopperqueries.com/logo.png"
+    }
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://shopperqueries.com/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+};
+
+// Blog List Schema
+const blogListSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "item": {
+      "@type": "Article",
+      "headline": post.data.title,
+      "author": {
+        "@type": "Person",
+        "name": post.data.author || "Shopperqueries Team"
+      },
+      "datePublished": post.data.date.toISOString(),
+      "image": post.data.image || "https://shopperqueries.com/default-image.jpg",
+      "url": `https://shopperqueries.com/blog/${post.slug}`
+    }
+  }))
+};
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
-  <script is:inline type="application/ld+json">
-    {JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Shopperqueries",
-      "url": "https://shopperqueries.com",
-      "description": "Explore a new realm of shopping satisfaction with Shopperqueries, your trusted guide to elevated shopping experiences.",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Shopperqueries",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://shopperqueries.com/logo.png"
-        }
-      },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://shopperqueries.com/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    })}
-  </script>
-
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema, null, 2)}></script>
+  
   {blog.length > 0 && (
-    <script is:inline type="application/ld+json">
-      {JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "itemListElement": blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post, index) => ({
-          "@type": "ListItem",
-          "position": index + 1,
-          "item": {
-            "@type": "Article",
-            "headline": post.data.title,
-            "author": {
-              "@type": "Person",
-              "name": post.data.author || "Shopperqueries Team"
-            },
-            "datePublished": post.data.date.toISOString(),
-            "image": post.data.image || "https://shopperqueries.com/default-image.jpg",
-            "url": `https://shopperqueries.com/blog/${post.id.replace(/^.*\//, '')}`
-          }
-        }))
-      }, null, 2)}
-    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(blogListSchema, null, 2)}></script>
   )}
 
   <Container>
