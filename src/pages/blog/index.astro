@@ -42,7 +42,7 @@ const breadcrumbItems = [
 const blogListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  "itemListElement": posts[years[0]].slice(0, 10).map((post: BlogPost, index: number) => ({
+  "itemListElement": data.slice(0, 10).map((post: BlogPost, index: number) => ({
     "@type": "ListItem",
     "position": index + 1,
     "item": {
@@ -54,7 +54,7 @@ const blogListSchema = {
       },
       "datePublished": post.data.date.toISOString(),
       "image": post.data.image ?? "https://shopperqueries.com/default-image.jpg",
-      "url": `https://shopperqueries.com/blog/${post.id.replace(/^.*\//, '')}`
+      "url": `https://shopperqueries.com/blog/${post.id.replace(/\/index\.mdx?$/, '')}`
     }
   }))
 };

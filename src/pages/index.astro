@@ -21,6 +21,9 @@ const blog: BlogPost[] = (await getCollection("blog"))
     b.data.date.valueOf() - a.data.date.valueOf()
   );
 
+const POSTS_PER_PAGE = 100; // Number of posts to show initially
+const displayPosts = blog.slice(0, POSTS_PER_PAGE);
+
 // Website Schema
 const websiteSchema = {
   "@context": "https://schema.org",
@@ -47,7 +50,7 @@ const websiteSchema = {
 const blogListSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
-  "itemListElement": blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post: BlogPost, index: number) => ({
+  "itemListElement": displayPosts.map((post: BlogPost, index: number) => ({
     "@type": "ListItem",
     "position": index + 1,
     "item": {
@@ -68,7 +71,7 @@ const blogListSchema = {
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
   <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema, null, 2)}></script>
   
-  {blog.length > 0 && (
+  {displayPosts.length > 0 && (
     <script is:inline type="application/ld+json" set:html={JSON.stringify(blogListSchema, null, 2)}></script>
   )}
 
@@ -92,18 +95,28 @@ const blogListSchema = {
         </section>
 
         {
-          blog.length > 0 && (
+          displayPosts.length > 0 && (
             <section>
               <h2 class="mb-4 text-lg font-semibold text-black dark:text-white">
                 Recent Posts
               </h2>
               <ul class="grid grid-cols-1 gap-4">
-                {blog.slice(0, SITE.NUM_POSTS_ON_HOMEPAGE).map((post: BlogPost) => (
+                {displayPosts.map((post: BlogPost) => (
                   <li>
                     <ArrowCard entry={post} />
                   </li>
                 ))}
               </ul>
+              {displayPosts.length < blog.length && (
+                <div class="mt-4 text-center">
+                  <a 
+                    href="/blog" 
+                    class="inline-block px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-lg hover:opacity-80 transition-opacity"
+                  >
+                    View All Posts ({blog.length} total)
+                  </a>
+                </div>
+              )}
             </section>
           )
         }
