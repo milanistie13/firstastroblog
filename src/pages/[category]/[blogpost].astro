@@ -61,6 +61,9 @@ const prevPost = getPrevPost();
 const post = Astro.props;
 const { Content, headings } = await render(post);
 
+const postUrl = `https://shopperqueries.com/${Astro.params.category}/${post.id.replace(/\/index\.mdx?$/, '')}`;
+const canonicalUrl = postUrl;
+
 const breadcrumbItems = [
   { label: 'Home', href: '/' },
   { label: 'Blog', href: '/' },
@@ -80,30 +83,24 @@ const breadcrumbItems = [
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "headline": post.data.title,
+      "description": post.data.description,
+      "datePublished": post.data.date.toISOString(),
       "author": {
         "@type": "Person",
-        "name": post.data.author || "Shopperqueries Team"
+        "name": "Shopperqueries Team",
+        "url": "https://shopperqueries.com"
       },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Shopperqueries",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://shopperqueries.com/logo.png"
-        }
-      },
-      "datePublished": post.data.date.toISOString(),
-      "dateModified": post.data.date.toISOString(),
-      "description": post.data.description,
       "image": post.data.image || "https://shopperqueries.com/default-image.jpg",
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://shopperqueries.com/blog/${post.slug}`
+        "@id": postUrl
       },
+      "url": postUrl,
       "keywords": post.data.tags?.join(", ") || "",
       "articleSection": post.data.category || "Uncategorized"
     })}
   </script>
+  <link rel="canonical" href={canonicalUrl} />
   <Container>
     <Breadcrumb items={breadcrumbItems} />
     <div class="animate">
