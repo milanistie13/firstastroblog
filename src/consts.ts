@@ -4,7 +4,7 @@ export const SITE: Site = {
   TITLE: "Shopperqueries",
   DESCRIPTION: "Explore a new realm of shopping satisfaction with Shopperqueries, your trusted guide to elevated shopping experiences.",
   EMAIL: "solucionermedia@gmail.com",
-  NUM_POSTS_ON_HOMEPAGE: 5,
+  NUM_POSTS_ON_HOMEPAGE: 100,
   NUM_PROJECTS_ON_HOMEPAGE: 3,
 };
 
