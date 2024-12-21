@@ -16,7 +16,7 @@ export async function getStaticPaths() {
   return posts.map((post) => ({
     params: { 
       category: post.data.category?.toLowerCase().replace(/\s+/g, '-') || 'uncategorized', 
-      blogpost: post.slug 
+      blogpost: post.id.replace(/\/index\.mdx?$/, '')
     },
     props: post,
   }));

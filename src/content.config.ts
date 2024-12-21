@@ -25,4 +25,7 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = { blog, projects };
+export const collections = { 
+  blog, 
+  projects 
+};
