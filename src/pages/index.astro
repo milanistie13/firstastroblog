@@ -1,11 +1,11 @@
 ---
 import { type CollectionEntry, getCollection } from "astro:content";
-import Layout from "@layouts/Layout.astro";
-import Container from "@components/Container.astro";
-import ArrowCard from "@components/ArrowCard.astro";
-import Link from "@components/Link.astro";
-import type { Socials } from "@types";
-import { SITE, HOME, SOCIALS } from "@consts";
+import Layout from "../layouts/Layout.astro";
+import Container from "../components/Container.astro";
+import ArrowCard from "../components/ArrowCard.astro";
+import Link from "../components/Link.astro";
+import type { Socials } from "../types";
+import { SITE, HOME, SOCIALS } from "../consts";
 
 // Extend the blog post type with optional properties
 type BlogPost = CollectionEntry<"blog"> & {
@@ -23,6 +23,12 @@ const blog: BlogPost[] = (await getCollection("blog"))
 
 const POSTS_PER_PAGE = 100; // Number of posts to show initially
 const displayPosts = blog.slice(0, POSTS_PER_PAGE);
+
+// Manually select featured posts (you can change these indices)
+const featuredPostIndices = [0, 2, 4]; // First, third, and fifth posts
+const featuredPosts = featuredPostIndices
+  .map(index => blog[index])
+  .filter(Boolean); // Remove any undefined posts
 
 // Website Schema
 const websiteSchema = {
@@ -93,6 +99,23 @@ const blogListSchema = {
             </span>
           </article>
         </section>
+
+        {
+          featuredPosts.length > 0 && (
+            <section>
+              <h2 class="mb-4 text-lg font-semibold text-black dark:text-white">
+                Featured Posts
+              </h2>
+              <ul class="grid grid-cols-1 gap-4">
+                {featuredPosts.map((post: BlogPost) => (
+                  <li>
+                    <ArrowCard entry={post} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
 
         {
           displayPosts.length > 0 && (

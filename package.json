@@ -5,14 +5,16 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build && npx pagefind --site dist",
-    "build:verbose": "astro check && astro build --verbose && npx pagefind --site dist",
+    "build": "astro check && astro build",
+    "build:verbose": "astro check && astro build --verbose",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "pagefind": "npx pagefind --site dist"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/mdx": "^4.0.1",
+    "@astrojs/react": "^4.1.2",
     "@astrojs/rss": "^4.0.10",
     "@astrojs/sitemap": "^3.2.1",
     "@astrojs/tailwind": "^5.1.3",

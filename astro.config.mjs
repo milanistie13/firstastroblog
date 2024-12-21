@@ -1,6 +1,5 @@
+import { defineConfig } from 'astro/config';
 import tailwind from "@astrojs/tailwind";
-import { defineConfig } from "astro/config";
-
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import pagefind from "astro-pagefind";
@@ -8,6 +7,11 @@ import pagefind from "astro-pagefind";
 // https://astro.build/config
 export default defineConfig({
   site: "https://shopperqueries.com",
+  output: 'static', // Explicitly set static output
+  build: {
+    // Ensure HTML files are generated
+    format: 'file'
+  },
   integrations: [
     tailwind(), 
     sitemap({
@@ -41,16 +45,22 @@ export default defineConfig({
       },
       ui: {
         resetStyles: true
-      },
-      build: {
-        verbose: false,
-        sourcemap: false
       }
     })
   ],
-  markdown: {
-    shikiConfig: {
-      theme: "css-variables",
-    },
+  server: {
+    port: 4321,
+    host: true
   },
+  vite: {
+    server: {
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+      },
+      // Increase body size limit
+      bodyLimit: 1024 * 1024 * 10 // 10MB
+    }
+  }
 });

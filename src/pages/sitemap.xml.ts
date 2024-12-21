@@ -1,26 +1,44 @@
 import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
+import fs from 'fs';
+import path from 'path';
 
 const SITE_URL = 'https://shopperqueries.com';
 
-export const GET: APIRoute = async () => {
+// Recursive function to find all blog post files
+function findBlogPosts(dir: string): { id: string, date: Date }[] {
+  const posts: { id: string, date: Date }[] = [];
+
+  function traverseDirectory(currentPath: string) {
+    const files = fs.readdirSync(currentPath);
+    
+    files.forEach(file => {
+      const fullPath = path.join(currentPath, file);
+      const stat = fs.statSync(fullPath);
+      
+      if (stat.isDirectory()) {
+        traverseDirectory(fullPath);
+      } else if (file.endsWith('.md') || file.endsWith('.mdx')) {
+        posts.push({
+          id: path.relative(dir, fullPath),
+          date: stat.mtime
+        });
+      }
+    });
+  }
+
+  traverseDirectory(dir);
+  
+  return posts.sort((a, b) => b.date.valueOf() - a.date.valueOf());
+}
+
+export const GET: APIRoute = () => {
   // Get all blog posts
-  const posts: CollectionEntry<'blog'>[] = await getCollection('blog');
+  const blogDir = path.join(process.cwd(), 'src', 'content', 'blog');
+  const posts = findBlogPosts(blogDir);
   
-  // Get all categories
-  const categories: string[] = [...new Set(
-    posts
-      .map(post => post.data.category)
-      .filter((category): category is string => category !== undefined)
-  )];
-  
-  // Get all tags
-  const tags: string[] = [...new Set(
-    posts
-      .flatMap(post => post.data.tags || [])
-      .filter((tag): tag is string => tag !== undefined)
-  )];
+  // Predefined categories and tags
+  const categories = ['Review', 'Tips', 'Guide'];
+  const tags = ['Reference', 'Example', 'Test', 'Blob', 'Tutorial'];
 
   // Generate sitemap XML
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -40,6 +58,11 @@ export const GET: APIRoute = async () => {
     <priority>0.7</priority>
     <changefreq>weekly</changefreq>
   </url>
+  <url>
+    <loc>${SITE_URL}/tags</loc>
+    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+  </url>
   ${categories.map(category => `
   <url>
     <loc>${SITE_URL}/categories/${category.toLowerCase().replace(/\s+/g, '-')}</loc>
@@ -54,8 +77,8 @@ export const GET: APIRoute = async () => {
   </url>`).join('')}
   ${posts.map(post => `
   <url>
-    <loc>${SITE_URL}/blog/${post.id.replace(/^.*\//, '')}</loc>
-    <lastmod>${post.data.date.toISOString().split('T')[0]}</lastmod>
+    <loc>${SITE_URL}/blog/${post.id.replace(/\.(md|mdx)$/, '').replace(/\\index$/, '')}</loc>
+    <lastmod>${post.date.toISOString().split('T')[0]}</lastmod>
     <priority>0.7</priority>
     <changefreq>weekly</changefreq>
   </url>`).join('')}

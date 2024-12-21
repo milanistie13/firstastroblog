@@ -1,7 +1,18 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "public/pagefind/**/*"],
+  "include": [
+    ".astro/types.d.ts", 
+    "src/**/*.{ts,tsx,astro}", 
+    "src/layouts/Layout.astro",
+    "src/types/astro-content.d.ts"
+  ],
+  "exclude": [
+    "dist", 
+    "public/pagefind/**/*",
+    "src/layouts/BaseLayout.astro",
+    "src/layouts/BlogPost.astro", 
+    "src/pages/create-blog.astro"
+  ],
   "compilerOptions": {
     "strictNullChecks": true,
     "baseUrl": ".",
