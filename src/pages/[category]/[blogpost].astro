@@ -16,7 +16,7 @@ export async function getStaticPaths() {
   return posts.map((post) => ({
     params: { 
       category: post.data.category?.toLowerCase().replace(/\s+/g, '-') || 'uncategorized', 
-      blogpost: post.id 
+      blogpost: post.slug 
     },
     props: post,
   }));
@@ -30,7 +30,7 @@ const posts = (await getCollection("blog"))
 function getNextPost() {
   let postIndex;
   for (const post of posts) {
-    if (post.id === Astro.params.blogpost) {
+    if (post.slug === Astro.params.blogpost) {
       postIndex = posts.indexOf(post);
       if(postIndex + 1 < posts.length) {
         return posts[postIndex + 1];
@@ -44,7 +44,7 @@ function getNextPost() {
 function getPrevPost() {
   let postIndex;
   for (const post of posts) {
-    if (post.id === Astro.params.blogpost) {
+    if (post.slug === Astro.params.blogpost) {
       postIndex = posts.indexOf(post);
       if(postIndex - 1 >= 0) {
         return posts[postIndex - 1];

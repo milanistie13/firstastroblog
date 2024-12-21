@@ -13,7 +13,7 @@ export async function getStaticPaths() {
   const posts = await getCollection("blog", (post) => !post.data.draft);
   return posts.map((post) => ({
     params: { 
-      blogpost: post.id 
+      blogpost: post.slug 
     },
     props: { post },
   }));
@@ -26,7 +26,7 @@ const posts = await getCollection("blog", (p) => !p.data.draft);
 function getNextPost() {
   let postIndex: number | undefined;
   for (const p of posts) {
-    if (p.id === post.id) {
+    if (p.slug === post.slug) {
       postIndex = posts.indexOf(p);
       if(postIndex + 1 < posts.length) {
         return posts[postIndex + 1];
@@ -41,7 +41,7 @@ function getNextPost() {
 function getPrevPost() {
   let postIndex: number | undefined;
   for (const p of posts) {
-    if (p.id === post.id) {
+    if (p.slug === post.slug) {
       postIndex = posts.indexOf(p);
       if(postIndex - 1 >= 0) {
         return posts[postIndex - 1];
@@ -56,9 +56,7 @@ function getPrevPost() {
 const nextPost = getNextPost();
 const prevPost = getPrevPost();
 
-const { Content, headings } = await import("astro:content").then(module => 
-  module.render(post)
-);
+const { Content, headings } = await post.render();
 
 const tags: string[] = post.data.tags ?? [];
 
@@ -137,7 +135,7 @@ const categoryLink = post.data.category ? {
       <PostNavigation 
         prevPost={prevPost} 
         nextPost={nextPost} 
-        blogpost={post.id} 
+        blogpost={post.slug} 
       />
     </div>
   </Container>
